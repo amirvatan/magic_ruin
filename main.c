@@ -1,3 +1,4 @@
+#include <curses.h>
 #include <form.h>
 #include <ncurses.h>
 #include <stdint.h>
@@ -5,13 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/unistd.h>
+#include <wchar.h>
 
 int spells(int h, int w) {
-  WINDOW *term = newwin(3, 20, (h / 2) - 1, (w / 2) - 10);
+  WINDOW *term = newwin(3, 40, 5, (w / 2) - 20);
   cbreak();
-
   noecho();
-
   keypad(stdscr, TRUE);
 
   if (start_color() == ERR || !has_colors() || !can_change_color()) {
@@ -37,17 +37,21 @@ int spells(int h, int w) {
   while (1) {
 
     ch = getch();
-    if (ch == KEY_ENTER) {
+    if (ch == '\n') {
+      wprintw(term, "hel");
+      wrefresh(term);
       if (strcmp(buffer, "stop") == 0) {
         break;
+      } else {
+        continue;
       }
 
     } else if (ch == KEY_BACKSPACE && y >= 2) {
       buffer--;
       *buffer = '\0';
-      wmove(term, x, --y);
+      wmove(term, x, y == 2 ? 1 : --y);
       waddch(term, ' ');
-    } else if (y < 18 && y >= 2) {
+    } else if (y < 38 && y >= 2) {
 
       waddch(term, ch);
       *buffer = ch;
