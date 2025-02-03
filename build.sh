@@ -4,4 +4,4 @@ do
     gcc -c "$file"
 done
 obj=$(find . -type f -iname "*.o")
-gcc -lSDL2 -g $obj -o main.out 
+gcc -lm -lSDL2 -g $obj -o main.out 

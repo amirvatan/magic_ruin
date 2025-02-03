@@ -1,5 +1,8 @@
 #include "render_util.h"
 #include <stdio.h>
+#include <stdlib.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "../include/stb_image.h"
 
 u32 render_shader(char *vert_path, char *freg_path) {
   int success;
@@ -47,4 +50,28 @@ u32 render_shader(char *vert_path, char *freg_path) {
   free(src_fragment);
 
   return shader;
+}
+
+u32 render_texture(char *tex_path) {
+
+  u32 texture;
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  int width, height, nChannels;
+  unsigned char *buffer = stbi_load(tex_path, &width, &height, &nChannels, 0);
+  if (buffer) {
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                 GL_UNSIGNED_BYTE, buffer);
+    glGenerateMipmap(GL_TEXTURE_2D);
+  } else {
+    printf("Failed to generate texture");
+    exit(1);
+  }
+  stbi_image_free(buffer);
+  return texture;
 }

@@ -6,4 +6,5 @@
 #include "../types.h"
 
 u32 render_shader(char * vert_path,char * freg_path);
+u32 render_texture(char * tex_path);
 #endif

@@ -69,10 +69,10 @@ void render_init_triangle(u32 *vao, u32 *vbo, u32 *ebo) {
 }
 void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo) {
   f32 vertices[] = {
-      -0.5, -0.5, 0, // bottom left
-      -0.5, 0.5,  0, // top left
-      0.5,  0.5,  0, // top right
-      0.5,  -0.5, 0, // bottom right
+      -0.5, -0.5, 0, 1.0, 1.0, // bottom left
+      -0.5, 0.5,  0, 1.0, 0.0, // top left
+      0.5,  0.5,  0, 0.0, 0.0, // top right
+      0.5,  -0.5, 0, 0.0, 1.0, // bottom right
 
   };
   u32 indices[] = {
@@ -89,8 +89,11 @@ void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(f32), (void *)0);
   glEnableVertexAttribArray(0);
 
-  glBindVertexArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(f32),
+                        (void *)(3 * sizeof(f32)));
+
+  glEnableVertexAttribArray(1);
 }

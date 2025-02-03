@@ -21,7 +21,7 @@ void render_triangle(u32 *vao, u32 *program) {
 void render_quad(u32 *vao, u32 *program) {
   glUseProgram(*program);
   glBindVertexArray(*vao);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 

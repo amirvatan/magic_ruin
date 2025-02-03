@@ -16,6 +16,7 @@ int main() {
   // render_init_triangle(&vao, &vbo, &ebo);
   render_init_quad(&vao, &vbo, &ebo);
   u32 program = render_shader("shaders/default.vert", "shaders/default.frag");
+  u32 texture = render_texture("./texture/container.jpg");
   SDL_Event e;
   while (!exit) {
     while (SDL_PollEvent(&e) != 0) {
@@ -27,6 +28,7 @@ int main() {
     }
     render_begin();
     // render_triangle(&vao, &program);
+    glBindTexture(GL_TEXTURE_BINDING_2D, texture);
     render_quad(&vao, &program);
     SDL_GL_SwapWindow(win);
   }
