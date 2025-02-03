@@ -15,8 +15,8 @@ int main() {
   u32 ebo;
   vec2 pos = {0.5, 0.5};
   vec2 size = {1.0, 1.0};
-  //  render_init_triangle(&vao, &vbo, &ebo);
-  render_init_quad(&vao, &vbo, &ebo);
+  render_init_triangle(&vao, &vbo, &ebo);
+  // render_init_quad(&vao, &vbo, &ebo);
   u32 program = render_shader("shaders/default.vert", "shaders/default.frag");
   u32 texture = render_texture("./texture/container.jpg");
   SDL_Event e;
@@ -29,9 +29,8 @@ int main() {
       }
     }
     render_begin();
-    // render_triangle(&vao, &program);
     glBindTexture(GL_TEXTURE_BINDING_2D, texture);
-    render_quad(pos, size, &vao, &program);
+    render_object(pos, size, &vao, &program, 12);
     SDL_GL_SwapWindow(win);
   }
   SDL_DestroyWindow(win);

@@ -10,16 +10,7 @@ void render_begin() {
 
 void render_end(SDL_Window *win) { SDL_GL_SwapWindow(win); }
 
-void render_triangle(u32 *vao, u32 *program) {
-  glUseProgram(*program);
-  glBindVertexArray(*vao);
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-  glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, NULL);
-
-  glBindVertexArray(0);
-}
-void render_quad(vec2 pos, vec2 size, u32 *vao, u32 *program) {
+void render_object(vec2 pos, vec2 size, u32 *vao, u32 *program, u32 nElement) {
 
   glUseProgram(*program);
   mat4x4 model;
@@ -32,7 +23,7 @@ void render_quad(vec2 pos, vec2 size, u32 *vao, u32 *program) {
   glBindVertexArray(*vao);
   //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+  glDrawElements(GL_TRIANGLES, nElement, GL_UNSIGNED_INT, NULL);
 
   glBindVertexArray(0);
 }
