@@ -1,32 +1,51 @@
 #include "io.h"
-
-char *read_file(char *path) {
-  FILE *fp = fopen(path, "r");
+#include <stdio.h>
+#define IO_READ_CHUNK_SIZE 2097152
+char *read_file(const char *path) {
+  FILE *fp = fopen(path, "rb");
   if (!fp) {
-    printf("Failed to read file %s\n", path);
-    exit(1);
+    printf("Failed to open file %s\n", path);
   }
-  fseek(fp, 0, SEEK_END);
+  char *data = NULL;
+  char *tmp;
+  size_t used = 0;
+  size_t size = 0;
+  size_t n;
 
-  int length = ftell(fp);
+  while (1) {
+    if (used + IO_READ_CHUNK_SIZE + 1 > size) {
+      size = used + IO_READ_CHUNK_SIZE + 1;
 
-  if (length == -1) {
-    printf("Failed to read file length %s\n", path);
-    exit(1);
+      if (size <= used) {
+        free(data);
+      }
+
+      tmp = realloc(data, size);
+      if (!tmp) {
+        free(data);
+      }
+      data = tmp;
+    }
+
+    n = fread(data + used, 1, IO_READ_CHUNK_SIZE, fp);
+    if (n == 0)
+      break;
+
+    used += n;
   }
-  fseek(fp, 0, SEEK_SET);
-  char *buffer = malloc((length + 1) * sizeof(char));
 
-  if (!buffer) {
-    printf("Failed to allocate buffer");
-    exit(1);
+  if (ferror(fp)) {
+    free(data);
   }
-  fread(buffer, sizeof(char), length, fp);
-  buffer[length] = 0;
 
-  fclose(fp);
-  printf("File loaded %s\n", path);
-  return buffer;
+  tmp = realloc(data, used + 1);
+  if (!tmp) {
+    free(data);
+  }
+  data = tmp;
+  data[used] = 0;
+
+  return data;
 }
 
 int write_file(void *data, size_t size, char *path) {
@@ -46,3 +65,4 @@ int write_file(void *data, size_t size, char *path) {
 
   return 0;
 }
+

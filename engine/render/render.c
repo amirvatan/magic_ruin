@@ -11,6 +11,11 @@ void render_begin() {
 void render_end(SDL_Window *win) { SDL_GL_SwapWindow(win); }
 
 void render_object(vec2 pos, vec2 size, u32 *vao, u32 *program, u32 nElement) {
+  mat4x4 projection;
+  mat4x4_ortho(projection, 0, 800, 0, 600, -2, 2);
+
+  glUniformMatrix4fv(glGetUniformLocation(*program, "projection"), 1, GL_FALSE,
+                     &projection[0][0]);
 
   glUseProgram(*program);
   mat4x4 model;

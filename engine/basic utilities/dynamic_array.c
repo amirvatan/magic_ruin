@@ -1,15 +1,15 @@
 #include "dynamic_array.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 
-d_array init_array(size_t size, size_t d_size) {
-  d_array array = {
-      .d_size = d_size,
-      .size = size,
-      .index = 0,
-      .data = malloc(size * d_size),
-  };
+d_array *init_array(int size, size_t d_size) {
+  d_array *array = malloc(sizeof(d_array));
+  array->d_size = d_size;
+  array->size = size;
+  array->index = 0;
+  array->data = malloc(size * d_size);
   return array;
 }
 
@@ -24,8 +24,7 @@ void push_array(d_array *array, void *value) {
       return;
     }
   }
-  memcpy((unsigned int *)array->data + index * array->d_size, value,
-         array->d_size);
+  memcpy((u8 *)array->data + (index * array->d_size), value, array->d_size);
   array->index = ++index;
 }
 void insert_array(d_array *array, void *value, size_t idx) {
@@ -39,14 +38,13 @@ void insert_array(d_array *array, void *value, size_t idx) {
     push_array(array, value);
     return;
   }
-  memcpy((unsigned int *)array->data + idx * array->d_size, value,
-         array->d_size);
+  memcpy((u8 *)array->data + idx * array->d_size, value, array->d_size);
 }
 
-d_array copy_array(d_array *array) {
-  d_array cp_array = init_array(array->size, array->d_size);
+d_array *copy_array(d_array *array) {
+  d_array *cp_array = init_array(array->size, array->d_size);
 
-  memcpy((unsigned int *)cp_array.data, (unsigned int *)array->data,
+  memcpy((u8 *)cp_array->data, (unsigned int *)array->data,
          array->size * array->d_size);
 
   return cp_array;
@@ -54,11 +52,14 @@ d_array copy_array(d_array *array) {
 
 void *head_array(d_array *array) {
   int index = (*array).index;
-  return (unsigned int *)array->data + (array->index - 1) * array->d_size;
+  return (u8 *)array->data + (array->index - 1) * array->d_size;
+}
+void *get_element(d_array *array, size_t index) {
+  return (u8 *)array->data + (index)*array->d_size;
 }
 
 void *pop_array(d_array *array) {
   int index = (*array).index;
   array->index = index - 1;
-  return (unsigned int *)array->data + index * array->d_size;
+  return (u8 *)array->data + index * array->d_size;
 }

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-char * read_file(char * path);
+char * read_file(const char * path);
 int write_file(void * data,size_t size,char * path);
 
 #endif
