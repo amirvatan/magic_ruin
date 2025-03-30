@@ -11,8 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define EULER_NUMBER_F 2.71828182846
-
 void keyboard(bool *keys) {
   SDL_Event e;
   while (SDL_PollEvent(&e) != 0) {
@@ -75,12 +73,6 @@ int main() {
     Body *body = (Body *)head_array(&objects);
     body->acceleration[0] = (rand() % 200) - 100;
     body->acceleration[1] = (rand() % 200) - 100;
-  }
-  for (int i = 0; i < objects.index; i++) {
-    Body *body = get_physics_body(&objects, i);
-    printf("%f\n", body->aabb.position[0]);
-    printf("%f\n", body->aabb.position[1]);
-    printf("=====================\n");
   }
 
   u32 program = render_shader("shaders/default.vert", "shaders/default.frag");
