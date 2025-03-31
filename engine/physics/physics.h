@@ -4,6 +4,7 @@
 #include "../include/linmath.h"
 #include "../basic utilities/dynamic_array.h"
 #include "../types.h"
+#include <stdbool.h>
 
 typedef struct {
 	vec2 position;
@@ -16,6 +17,13 @@ typedef struct {
 	vec2 acceleration;
 } Body;
 
+typedef  struct {
+	size_t other_id;
+	f32 time;
+	vec2 position;
+	vec2 normal;
+	bool is_hit;
+} Hit;
 void init_physics(d_array * objects);
 void create_physics_body(d_array * objects,vec2 pos,vec2 size);
 void update_physics(d_array * objects,f32 delta);
