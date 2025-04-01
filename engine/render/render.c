@@ -26,9 +26,14 @@ void render_object(vec2 pos, vec2 size, u32 *vao, u32 *program, u32 nElement) {
                      &model[0][0]);
 
   glBindVertexArray(*vao);
-  //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   glDrawElements(GL_TRIANGLES, nElement, GL_UNSIGNED_INT, NULL);
 
   glBindVertexArray(0);
+}
+void render_aabb(AABB *aabb, u32 *voa, u32 *program) {
+  vec2 size;
+  vec2_scale(size, aabb->half_size, 2);
+  render_object(aabb->position, size, voa, program, 6);
 }
