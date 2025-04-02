@@ -2,7 +2,6 @@
 #include "../include/linmath.h"
 #include "render_util.h"
 #include <SDL2/SDL_video.h>
-
 SDL_Window *render_init_window(u32 width, u32 height) {
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -50,6 +49,44 @@ void render_init_shaders(u32 *shader_default, u32 *shader_batch,
   glUniformMatrix4fv(glGetUniformLocation(*shader_batch, "projection"), 1,
                      GL_FALSE, &projection[0][0]);
 }
+
+void render_init_batch_quads(u32 *vao, u32 *vbo, u32 *ebo) {
+  glGenVertexArrays(1, vao);
+  glBindVertexArray(*vao);
+
+  u32 indices[MAX_BATCH_ELEMENTS];
+  for (u32 i = 0, offset = 0; i < MAX_BATCH_ELEMENTS; i += 6, offset += 4) {
+    indices[i + 0] = offset + 0;
+    indices[i + 1] = offset + 1;
+    indices[i + 2] = offset + 2;
+    indices[i + 3] = offset + 2;
+    indices[i + 4] = offset + 3;
+    indices[i + 5] = offset + 0;
+  }
+
+  glGenBuffers(1, vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * MAX_BATCH_VERTICES * 4, NULL,
+               GL_DYNAMIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Batch_Vertex),
+                        (void *)offsetof(Batch_Vertex, position));
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Batch_Vertex),
+                        (void *)offsetof(Batch_Vertex, uvs));
+  glEnableVertexAttribArray(2);
+
+  glGenBuffers(1, ebo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+               GL_STATIC_DRAW);
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 void render_init_triangle(u32 *vao, u32 *vbo, u32 *ebo) {
   f32 vertices[] = {
       -0.5, -0.5, 0, // bottom left

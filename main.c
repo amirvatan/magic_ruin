@@ -58,6 +58,8 @@ int main() {
   win = render_init();
   i32 width, height;
   SDL_GetWindowSize(win, &width, &height);
+  width /= 3;
+  height /= 3;
   f32 frame_delay;
   f32 time_last = 0;
   f32 delta;
@@ -66,11 +68,13 @@ int main() {
   init_physics(&objects, &static_objects);
   time_init(60, &frame_delay);
   create_physics_body(&objects, (vec2){width * 0.5, height * 0.5},
-                      (vec2){500, 500});
-  AABB aabb = {.position = {150, 150}, .half_size = {150, 150}};
+                      (vec2){20, 20});
+  AABB aabb = {.position = {150, 150}, .half_size = {20, 20}};
   create_physics_static_body(&static_objects, aabb.position, aabb.half_size);
 
-  u32 texture = render_texture("./texture/container.jpg");
+  Sprite_Sheet *sprite_sheet_player = malloc(sizeof(Sprite_Sheet));
+  render_sprite_sheet_init(sprite_sheet_player, "./assets/Wizard.png", 64, 64);
+  render_set_batch_texture(sprite_sheet_player->texture_id);
   while (!exit) {
     time_update(&time_last, &delta);
     keyboard(KEYS);
@@ -79,9 +83,10 @@ int main() {
     input_processing(KEYS, body);
     update_physics(&objects, &static_objects, delta);
     render_begin();
-
-    render_aabb(&body->aabb);
-    render_aabb(&static_body->aabb);
+    render_sprite_sheet_frame(sprite_sheet_player, 7, 1, body->aabb.position);
+    render_sprite_sheet_frame(sprite_sheet_player, 7, 2,
+                              static_body->aabb.position);
+    render_end(win);
     SDL_GL_SwapWindow(win);
     time_update_late(&frame_delay, &time_last);
   }
