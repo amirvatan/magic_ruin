@@ -1,3 +1,4 @@
+#include "engine/include/linmath.h"
 #include "engine/physics/physics.h"
 #include "engine/render/render.h"
 #include "engine/render/render_init.h"
@@ -54,10 +55,9 @@ int main() {
   bool KEYS[322] = {0};
   SDL_Window *win;
   bool exit = 0;
-  //  render_init(win);
-  int width = 800;
-  int height = 600;
-  win = render_init_window(width, height);
+  win = render_init();
+  i32 width, height;
+  SDL_GetWindowSize(win, &width, &height);
   f32 frame_delay;
   f32 time_last = 0;
   f32 delta;
@@ -65,18 +65,11 @@ int main() {
   d_array static_objects;
   init_physics(&objects, &static_objects);
   time_init(60, &frame_delay);
-  u32 vao;
-  u32 vbo;
-  u32 ebo;
-  vec2 pos = {width * 0.5, height * 0.5};
-  vec2 size = {200, 200};
-  create_physics_body(&objects, pos, size);
+  create_physics_body(&objects, (vec2){width * 0.5, height * 0.5},
+                      (vec2){500, 500});
   AABB aabb = {.position = {150, 150}, .half_size = {150, 150}};
   create_physics_static_body(&static_objects, aabb.position, aabb.half_size);
-  // render_init_triangle(&vao, &vbo, &ebo);
-  render_init_quad(&vao, &vbo, &ebo);
 
-  u32 program = render_shader("shaders/default.vert", "shaders/default.frag");
   u32 texture = render_texture("./texture/container.jpg");
   while (!exit) {
     time_update(&time_last, &delta);
@@ -86,9 +79,9 @@ int main() {
     input_processing(KEYS, body);
     update_physics(&objects, &static_objects, delta);
     render_begin();
-    // glBindTexture(GL_TEXTURE_BINDING_2D, texture);
-    render_aabb(&body->aabb, &vao, &program);
-    render_aabb(&static_body->aabb, &vao, &program);
+
+    render_aabb(&body->aabb);
+    render_aabb(&static_body->aabb);
     SDL_GL_SwapWindow(win);
     time_update_late(&frame_delay, &time_last);
   }

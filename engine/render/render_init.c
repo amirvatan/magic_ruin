@@ -1,4 +1,6 @@
 #include "render_init.h"
+#include "../include/linmath.h"
+#include "render_util.h"
 #include <SDL2/SDL_video.h>
 
 SDL_Window *render_init_window(u32 width, u32 height) {
@@ -32,7 +34,22 @@ SDL_Window *render_init_window(u32 width, u32 height) {
 
   return window;
 }
+void render_init_shaders(u32 *shader_default, u32 *shader_batch,
+                         f32 rednder_width, f32 render_height) {
+  *shader_default =
+      render_shader("shaders/default.vert", "shaders/default.frag");
+  mat4x4 projection;
+  mat4x4_ortho(projection, 0, rednder_width, 0, render_height, -2, 2);
+  glUseProgram(*shader_default);
+  glUniformMatrix4fv(glGetUniformLocation(*shader_default, "projection"), 1,
+                     GL_FALSE, &projection[0][0]);
+  *shader_batch = render_shader("shaders/batch_quad_vert.glsl",
+                                "shaders/batch_quad_frag.glsl");
 
+  glUseProgram(*shader_batch);
+  glUniformMatrix4fv(glGetUniformLocation(*shader_batch, "projection"), 1,
+                     GL_FALSE, &projection[0][0]);
+}
 void render_init_triangle(u32 *vao, u32 *vbo, u32 *ebo) {
   f32 vertices[] = {
       -0.5, -0.5, 0, // bottom left
