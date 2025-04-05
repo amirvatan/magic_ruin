@@ -29,7 +29,7 @@ typedef  struct {
 	bool is_hit;
 } Hit;
 void init_physics(d_array * objects,d_array * static_objects);
-void create_physics_body(d_array * objects,vec2 pos,vec2 size);
+usize create_physics_body(d_array * objects,vec2 pos,vec2 size);
 void create_physics_static_body(d_array * static_objects,vec2 pos,vec2 size);
 void update_physics(d_array * objects,d_array * static_objects,f32 delta);
 Body * get_physics_body(d_array * objects,size_t index);

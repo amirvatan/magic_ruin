@@ -162,14 +162,16 @@ void init_physics(d_array *objects, d_array *static_objects) {
   tick_rate = 1.f / iterations;
 }
 
-void create_physics_body(d_array *objects, vec2 pos, vec2 size) {
+usize create_physics_body(d_array *objects, vec2 pos, vec2 size,
+                          vec2 velocity) {
   Body body = {.aabb =
                    {
                        .position = {pos[0], pos[1]},
                        .half_size = {size[0] * 0.5, size[1] * 0.5},
                    },
-               .velocity = {0, 0}};
+               .velocity = *velocity};
   push_array(objects, &body);
+  return objects->index;
 }
 void create_physics_static_body(d_array *static_objects, vec2 pos, vec2 size) {
   Static_Body static_body = {.aabb = {.position = {pos[0], pos[1]},
